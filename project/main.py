@@ -84,7 +84,7 @@
 import csv
 from newspaper import Article
 from gensum import text_summarizer
-from main2 import categorize_articles
+from collect import categorize_articles
 from pathlib import Path
 
 # Function to download and parse articles, and save data to CSV

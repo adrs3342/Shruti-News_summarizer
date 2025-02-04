@@ -1,6 +1,5 @@
 import os
-from main3 import start
-from main5 import start_new
+from main import start_new
 import nltk
 from pathlib import Path
 nltk.download('punkt')
