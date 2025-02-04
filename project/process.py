@@ -81,15 +81,14 @@
 # }
 
 
-import csv
+
 import pandas as pd
-from newspaper import Article
 from gensum import text_summarizer
 from collect import categorize_articles
 from pathlib import Path
 
-# Function to download and parse articles, and save data to CSV
-def download_and_save_articles(links_list, csv_file):
+# Function to process already-downloaded articles, generate summaries, and save to CSV.
+def process_and_save_articles(articles_data, csv_file):
     article_links = []
     article_text = []
     article_summary = []
@@ -97,45 +96,30 @@ def download_and_save_articles(links_list, csv_file):
     article_img = []
     total = 0
 
-    for link in links_list:
+    for article in articles_data:
         try:
-            article = Article(link)
-            article.download()
-            article.parse()
-            text = article.text
-            summary = text_summarizer(text)  # Summarize using BART
-
-            # Get image URL from newspaper3k
-            img_src = article.top_image  # Extracts the top image
-
-            # Check if all fields are valid
-            if all(article.title not in article_titles and field for field in [link, text, summary, img_src]):
-                article_img.append(img_src)
-                article_links.append(link)
+            text = article["text"]
+            # Generate summary using gensum's text_summarizer.
+            summary = text_summarizer(text)
+            
+            # Validate fields (here you can add further validations if needed).
+            if all([article["url"], text, summary, article["top_image"]]) and article["title"] not in article_titles:
+                article_links.append(article["url"])
                 article_text.append(text)
-                article_titles.append(article.title)
+                article_titles.append(article["title"])
+                article_img.append(article["top_image"])
                 article_summary.append(summary)
                 total += 1
-                print(f"Collected {total}: {article.title}")
+                print(f"Collected {total}: {article['title']}")
 
-            if total >= 20:  # Stop after collecting 40 articles
+            if total >= 20:  # Stop after collecting 20 articles per category.
                 break
 
         except Exception as e:
-            print(f"Error processing article {link}: {e}")
+            print(f"Error processing article {article['url']}: {e}")
             continue
 
-    # # Save data to CSV
-    # if article_titles:
-    #     with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
-    #         writer = csv.writer(file)
-    #         writer.writerow(['Article Title', 'Article Link', 'Article Text', 'Article Summary', 'Article Image'])
-    #         for i in range(len(article_titles)):
-    #             writer.writerow([article_titles[i], article_links[i], article_text[i], article_summary[i], article_img[i]])
-    #     print("Data has been saved to:", csv_file)
-
-    #     import pandas as pd
-
+    # Create a DataFrame and save the data to CSV.
     df = pd.DataFrame({
         'Article Title': article_titles,
         'Article Link': article_links,
@@ -143,58 +127,40 @@ def download_and_save_articles(links_list, csv_file):
         'Article Summary': article_summary,
         'Article Image': article_img
     })
-
-    # ✅ Save DataFrame to CSV
     df.to_csv(csv_file, index=False, encoding='utf-8')
-
     print("Data has been saved to:", csv_file)
 
 
-# Define CSV file paths
+# Define CSV file paths relative to the current file.
 csv_folder = Path(__file__).resolve().parent
 info_files = {
-    "India": csv_folder / 'india.csv',
-    "World": csv_folder / 'world.csv',
-    "Business": csv_folder / 'business.csv',
-    "Technology": csv_folder / 'tech.csv',
-    "Sports": csv_folder / 'sports.csv'
+    "India": csv_folder / 'data/india.csv',
+    "World": csv_folder / 'data/world.csv',
+    "Business": csv_folder / 'data/business.csv',
+    "Technology": csv_folder / 'data/tech.csv',
+    "Sports": csv_folder / 'data/sports.csv'
 }
 
-
-domain_links = {
-    'India': [
-            "https://timesofindia.indiatimes.com/india",
-            "https://timesofindia.indiatimes.com/india/delhi",
-            "https://timesofindia.indiatimes.com/india/maharashtra", 
-            "https://timesofindia.indiatimes.com/india/tamil-nadu"
-    ],
-    'World': [
-            "https://timesofindia.indiatimes.com/world",
-            "https://timesofindia.indiatimes.com/world/middle-east",
-            "https://timesofindia.indiatimes.com/world/uk",
-            "https://timesofindia.indiatimes.com/world/us",
-            "https://timesofindia.indiatimes.com/world/south-asia"
-    ],
-    'Business': [
-            "https://timesofindia.indiatimes.com/business",
-            "https://timesofindia.indiatimes.com/business/stock-market",
-            "https://timesofindia.indiatimes.com/business/financial-literacy",
-            "https://timesofindia.indiatimes.com/business/india-business",
-            "https://timesofindia.indiatimes.com/business/international-business"
-    ],
-    'Technology': ["https://timesofindia.indiatimes.com/technology/tech-news"],
-    'Sports': ["https://timesofindia.indiatimes.com/sports"]
-}
+# List of URLs to scrape.
+all_links = [
+    "https://timesofindia.indiatimes.com/india",
+    "https://timesofindia.indiatimes.com/world",
+    "https://timesofindia.indiatimes.com/business",
+    "https://timesofindia.indiatimes.com/technology",
+    "https://timesofindia.indiatimes.com/sports"
+]
 
 def start_new():
-    domain_lists = categorize_articles(domain_links)
-    #print(domain_lists)  # Printing domain_lists for demonstration
-    d=['India', 'World', 'Business', 'Technology', 'Sports']
+    # Get the categorized articles (each article has already been processed once).
+    domain_lists = categorize_articles(all_links)
+    
+    # For each category, process the articles and save to CSV.
+    for category, filepath in info_files.items():
+        if category in domain_lists:
+            process_and_save_articles(domain_lists[category], filepath)
 
-    for i in range(5):
-        link_list = domain_lists[d[i]]
-        filepath = info_files[i]
-        download_and_save_articles(link_list, filepath)
+    print("\n\nApp ready for display")
 
-    print("\n\nApp ready for display")    
-
+# To run the process:
+if __name__ == "__main__":
+    start_new()

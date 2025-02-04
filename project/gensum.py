@@ -3,6 +3,7 @@ import re
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk import download
 from typing import List, Optional
+import torch
 
 MODEL_NAME = "facebook/bart-large-cnn"
 tokenizer = BartTokenizer.from_pretrained(MODEL_NAME)
@@ -75,7 +76,9 @@ def text_summarizer(
     # Using user parameters if provided, else dynamic values
     final_min = min_len if min_len is not None else dyn_min
     # final_max = max_len if max_len is not None else dyn_max
-    final_max = dyn_max
+    final_max = dyn_max # temproary removed it because i want max_len to be max_summary_length
+
+    max_summary_length = max_len if max_len is not None else max_summary_length
     
     # Ensuring valid length constraints
     final_min = max(10, min(final_min, 500))

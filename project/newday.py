@@ -1,16 +1,16 @@
 import os
-from main import start_new
+from process import start_new
 import nltk
 from pathlib import Path
 nltk.download('punkt')
 nltk.download('stopwords')
 csv_folder = Path(__file__).resolve().parent  # Get the directory of the script
 files = [
-    csv_folder/'india.csv',
-    csv_folder/'world.csv',
-    csv_folder/'business.csv',
-    csv_folder/'tech.csv',
-    csv_folder/'sports.csv'
+    csv_folder/'data/india.csv',
+    csv_folder/'data/world.csv',
+    csv_folder/'data/business.csv',
+    csv_folder/'data/tech.csv',
+    csv_folder/'data/sports.csv'
          ]
 
 for filepath in files:

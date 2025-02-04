@@ -591,11 +591,11 @@ st.markdown("<h1 class='main-title'>Shruti - Your AI-Powered News Summarizer</h1
 # Define CSV file paths for each category
 csv_folder = Path(__file__).resolve().parent  # Get the directory of the script
 category_csv_files = {
-    'India': csv_folder / 'india.csv',
-    'World': csv_folder / 'world.csv',
-    'Business': csv_folder / 'business.csv',
-    'Technology': csv_folder / 'tech.csv',
-    'Sports': csv_folder / 'sports.csv'
+    'India': csv_folder / 'data/india.csv',
+    'World': csv_folder / 'data/world.csv',
+    'Business': csv_folder / 'data/business.csv',
+    'Technology': csv_folder / 'data/tech.csv',
+    'Sports': csv_folder / 'data/sports.csv'
 }
 
 # Initialize session state variables if not set
