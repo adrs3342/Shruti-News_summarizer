@@ -82,6 +82,7 @@
 
 
 import csv
+import pandas as pd
 from newspaper import Article
 from gensum import text_summarizer
 from collect import categorize_articles
@@ -117,21 +118,36 @@ def download_and_save_articles(links_list, csv_file):
                 total += 1
                 print(f"Collected {total}: {article.title}")
 
-            if total >= 40:  # Stop after collecting 40 articles
+            if total >= 20:  # Stop after collecting 40 articles
                 break
 
         except Exception as e:
             print(f"Error processing article {link}: {e}")
             continue
 
-    # Save data to CSV
-    if article_titles:
-        with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            writer.writerow(['Article Title', 'Article Link', 'Article Text', 'Article Summary', 'Article Image'])
-            for i in range(len(article_titles)):
-                writer.writerow([article_titles[i], article_links[i], article_text[i], article_summary[i], article_img[i]])
-        print("Data has been saved to:", csv_file)
+    # # Save data to CSV
+    # if article_titles:
+    #     with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
+    #         writer = csv.writer(file)
+    #         writer.writerow(['Article Title', 'Article Link', 'Article Text', 'Article Summary', 'Article Image'])
+    #         for i in range(len(article_titles)):
+    #             writer.writerow([article_titles[i], article_links[i], article_text[i], article_summary[i], article_img[i]])
+    #     print("Data has been saved to:", csv_file)
+
+    #     import pandas as pd
+
+    df = pd.DataFrame({
+        'Article Title': article_titles,
+        'Article Link': article_links,
+        'Article Text': article_text,
+        'Article Summary': article_summary,
+        'Article Image': article_img
+    })
+
+    # ✅ Save DataFrame to CSV
+    df.to_csv(csv_file, index=False, encoding='utf-8')
+
+    print("Data has been saved to:", csv_file)
 
 
 # Define CSV file paths
