@@ -16,11 +16,11 @@ def preprocess_text(text):
 
 
 def classify_text_domain(text):
-    processed_text = preprocess_text(text)
-    with open("vectorizer.pkl", "rb") as file:
-        vectorizer = pickle.load(file)
-    text_vector = vectorizer.transform([processed_text])
-    with open("news_classifier.pkl", "rb") as file:
-        model = pickle.load(file)
-    prediction = model.predict(text_vector)
-    return prediction[0]
+    # processed_text = preprocess_text(text)
+    # with open("vectorizer.pkl", "rb") as file:
+    #     vectorizer = pickle.load(file)
+    # text_vector = vectorizer.transform([processed_text])
+    # with open("news_classifier.pkl", "rb") as file:
+    #     model = pickle.load(file)
+    # prediction = model.predict(text_vector)
+    return 'India'
