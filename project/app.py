@@ -623,7 +623,7 @@ selected_category = st.session_state["selected_category"]
 if not selected_category:
     st.write("## Welcome to Shruti!")
     st.write("### Explore the latest news or summarize your own content!")
-    st.image("https://source.unsplash.com/featured/?news", use_container_width=True)
+    st.image("https://www.google.com/url?sa=i&url=https%3A%2F%2Fperkupapp.com%2Fpost%2F20-of-the-best-welcome-to-the-team-memes&psig=AOvVaw2bfFcGnqvXWcfMH74lN2ot&ust=1738815513236000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIju5PnWq4sDFQAAAAAdAAAAABAE", use_container_width=True)
 
 elif selected_category and selected_category != "Generate Summary":
     st.write(f"## {selected_category}")
@@ -707,7 +707,7 @@ elif selected_category == "Generate Summary":
 
 st.markdown("""
 <p style='font-size: small; color: grey; text-align: center;'>
-A NLP project. <a href='https://github.com/akanksha1131/News-Articles-Summarizer-App'>GitHub Link</a>.
+A NLP project. <a href='https://github.com/TEAM-zero-one/Shruti-The-News-Companion'>GitHub Link</a>.
 Disclaimer: This project is intended for educational purposes only. Web scraping without proper authorization is not encouraged or endorsed.
 </p>
 """, unsafe_allow_html=True)
